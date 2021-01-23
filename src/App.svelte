@@ -11,7 +11,7 @@
 	});
 
 	
-	// All the tracked data\
+	// All the tracked data
 	let videoUrl = "https://www.youtube.com/watch?v=UkQCuJgKT5g"
 	let videoId = videoUrl.split('=')[1];
 	let dev = false;
@@ -40,10 +40,12 @@
 		}
 		console.log(dev," and code is: ",cheatCode)
 	}
+	
 	const onReady = (event: Event) => { 
 		player = event; 
 		// curTime = player.detail.target.getCurrentTime();
-
+		event.detail.target.playVideo();
+		console.log(player.detail.target)
 		//topCard.style.display = "none";
 	}
 
@@ -75,7 +77,6 @@
 
 	 const options = {
 		playerVars: {
-			autoplay: 1,
 			controls: 1,
 			
 		}
@@ -99,13 +100,21 @@
 		align-items: center;
 		justify-content: flex-start;
 	}
-	/* .ytvid {
+	:global(.ytvid) {
 		position: relative;
 		overflow: hidden;
-		width: 50%;
+		width: 100vw;
 		padding-top: 56.25%;
-		background-color: red;
-	} */
+	}
+	:global(#ytvid) {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+	}
 	.App{
 	  color: #333;
 	  min-height: 100vh;
