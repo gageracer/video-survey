@@ -1,4 +1,27 @@
 /** @type {import("snowpack").SnowpackUserConfig } */
+// const plugins = [
+//   // ...
+//   [
+//     "snowpack-plugin-rollup-bundle",
+//     {
+//       emitHtmlFiles: false,
+//       preserveSourceFiles: false,
+
+//       // equivalent to inputOptions.input from Rollup
+//       entrypoints: string | string[] | { [entryName: string]: string },
+
+// extendConfig: (config) => {
+//   // https://rollupjs.org/guide/en/#outputoptions-object
+//   config.outputOptions = {}
+
+//   // https://rollupjs.org/guide/en/#inputoptions-object
+//   config.inputOptions = {}
+
+//   return config
+// }
+//     }
+//   ]
+// ]
 module.exports = {
   mount: {
     public: {url: '/', static: true},
