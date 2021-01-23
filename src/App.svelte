@@ -12,7 +12,7 @@
 
 	
 	// All the tracked data\
-	let videoUrl = "https://www.youtube.com/watch?v=ch0NEbfP0kY"
+	let videoUrl = "https://www.youtube.com/watch?v=UkQCuJgKT5g"
 	let videoId = videoUrl.split('=')[1];
 	let dev = false;
 	let player: any;
@@ -75,7 +75,7 @@
 
 	 const options = {
 		playerVars: {
-			autoplay: 0,
+			autoplay: 1,
 			controls: 1,
 			
 		}
