@@ -5,7 +5,7 @@
 	import { now } from './stores/date'
 	
 	onMount(() => {
-		oprerations = [...oprerations,{type: "Site Loaded", date: now(), videoTime: 0}]
+		oprerations = oprerations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...oprerations,{type: "Site Loaded", date: now(), videoTime: 0}]
 		const interval2 = setInterval(() => onMountTime++, 1000);
 		return () => {
 			clearInterval(interval2);
