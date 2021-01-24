@@ -11,16 +11,23 @@
 			clearInterval(interval2);
 		};
 	});
-	
+
+	// Parameters Test
+	let params = (new URL(document.location.href)).searchParams
+	let urlVid = params.get('v') // is the video info
+	let uId = params.get('i')
+	$: console.log(videoId)
 	// TODO: Cookies Part 
 	
 	// document.cookie("Set-Cookie: third_party_var=value; SameSite=None; Secure");
 	//console.log(document.cookie)
 	// All the tracked data
+	let regex = /(?<=\?v=)\w+/
 	let onMountTime = 0;
 	let videoUrl = "https://www.youtube.com/watch?v=UkQCuJgKT5g"
-	let videoId = videoUrl.split('=')[1];
+	let videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
 	let dev = false;
+	let linkValid = true;
 	let player: any;
 	let watchTime = 0;
 	let playState = "not started yet";
@@ -30,7 +37,7 @@
 	
 
 	// All the reactive variables
-	$: videoId = videoUrl.split('=')[1];
+	// $: videoId = videoUrl.match(regex)!.toString();
 
 	// The Store Update Part
 	$: {
@@ -64,6 +71,9 @@
 	const onReady = (event: Event) => { 
 		player = event; 
 		oprerations = [...oprerations,{type: "Video Loaded", date: now(), videoTime: 0}]
+		console.log(player.detail.target.getIframe())
+		playState = "loaded"
+		linkValid = true
 	}
 
 	const onPlay = () => {
@@ -89,7 +99,10 @@
 		oprerations = [...oprerations,{type: "Video Ended", date: now(), videoTime: curTime}]
 		console.log($allData)
 	}
-	now
+
+	const onError = () => {
+		linkValid = false
+	}
 	const options = {
 		playerVars: {
 			controls: 1,
@@ -164,16 +177,23 @@
   </style>
   
   <main class="App">
-	<YouTube
-		{videoId}   
-		id="ytvid"
-		class={"ytvid"}
-		{options}
-		on:play={onPlay} 
-		on:pause={onPause}  
-		on:ready={onReady}
-		on:end={onEnd}
-	/>
+	
+	{#if linkValid}
+		<YouTube
+			{videoId}   
+			id="ytvid"
+			class={"ytvid"}
+			{options}
+			on:play={onPlay} 
+			on:pause={onPause}  
+			on:ready={onReady}
+			on:end={onEnd}
+			on:error={onError}
+		/>	 
+	{:else}
+		 <p>Invalid Link</p>
+	{/if}
+
 	<!-- Dev View to see the variables working -->
 	{#if dev}
 	<div class="dev">
@@ -186,6 +206,7 @@
 		<p>Full URL: {window.location.href}</p>
 		<p>Host Name: {window.location.hostname}</p>
 		<p>Path Name: {window.location.pathname}</p>
+		<p>Parameters: {params}</p>
 	</div>
 
 	{/if}
