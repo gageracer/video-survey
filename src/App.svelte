@@ -1,32 +1,52 @@
 <script lang='typescript'>
 	import {onMount} from 'svelte';
 	import YouTube from 'svelte-youtube'
-
-	let onMountTime = 0;
-	onMount(() => {
-	  const interval2 = setInterval(() => onMountTime++, 1000);
-	  return () => {
-		clearInterval(interval2);
-	  };
-	});
-
+	import { allData } from './stores/store'
+	import { now } from './stores/date'
 	
+	onMount(() => {
+		oprerations = [...oprerations,{type: "Site Loaded", date: now(), videoTime: 0}]
+		const interval2 = setInterval(() => onMountTime++, 1000);
+		return () => {
+			clearInterval(interval2);
+		};
+	});
+	
+	// TODO: Cookies Part 
+	
+	// document.cookie("Set-Cookie: third_party_var=value; SameSite=None; Secure");
+	//console.log(document.cookie)
 	// All the tracked data
+	let onMountTime = 0;
 	let videoUrl = "https://www.youtube.com/watch?v=UkQCuJgKT5g"
 	let videoId = videoUrl.split('=')[1];
 	let dev = false;
 	let player: any;
-	let curTime = 0;
+	let watchTime = 0;
 	let playState = "not started yet";
 	let vidInterval: any;
+	let curTime = 0;
+	let oprerations = [{type: "", date: "", videoTime: 0}]
+	
 
+	// All the reactive variables
 	$: videoId = videoUrl.split('=')[1];
+
+	// The Store Update Part
+	$: {
+		$allData.linkId = window.location.href;
+		$allData.videoLink = videoUrl
+		$allData.totalSiteTime = onMountTime
+		$allData.totalWatchTime = watchTime
+		$allData.operations = oprerations
+	}
+	
 	// DEVMODE STUFF
 	const devCode = 'd,e,v,m'
 	let cheatCode : any[] = []
 	document.onkeypress = (event) => {
-		let char = (typeof event !== 'undefined') ? event.key : null
-		console.log("char is",char)
+		let char = (typeof event !== 'undefined') ? event.key : ''
+		//console.log("char is",char)
 		
 		if (cheatCode.length > 3) {
 			[, ...cheatCode] = cheatCode
@@ -38,49 +58,45 @@
 		if (cheatCode.toString() === devCode) {
 			dev = !dev
 		}
-		console.log(dev," and code is: ",cheatCode)
+		//console.log(dev," and code is: ",cheatCode)
 	}
 	
 	const onReady = (event: Event) => { 
 		player = event; 
-		// curTime = player.detail.target.getCurrentTime();
-		event.detail.target.playVideo();
-		console.log(player.detail.target)
-		//topCard.style.display = "none";
+		oprerations = [...oprerations,{type: "Video Loaded", date: now(), videoTime: 0}]
 	}
 
 	const onPlay = () => {
-		// player= event.detail.target; 
-		console.log(player)
-		//curTime = player.getCurrentTime();
 		playState = "playing";
 		clearInterval(vidInterval)
-		vidInterval = setInterval(() => curTime += 0.25, 250);
-		console.log("playing");
-		let topCard = document.getElementsByClassName("ytp-chrome-top.ytp-show-cards-title")
-		console.log(topCard)
+		vidInterval = setInterval(() => {(watchTime += 0.25)}, 250);
+		curTime = (player != undefined) && player.detail.target.getCurrentTime().toFixed(2);
+		oprerations = [...oprerations,{type: "Video Playing", date: now(), videoTime: curTime}]
 	}
 
 	const onPause = () => {
-		// player= event.detail.target; 
-		//curTime = player.getCurrentTime();
 		playState = "paused"
-		console.log("paused")
 		clearInterval(vidInterval)
-		console.log(player.target)
+		curTime = (player != undefined) && player.detail.target.getCurrentTime().toFixed(2);
+		oprerations = [...oprerations,{type: "Video Paused", date: now(), videoTime: curTime}]
 	}
 
 	const onEnd = () => { 
 		playState = "Ended";
+		//console.log("ended ",now())
 		clearInterval(vidInterval)
+		curTime = (player != undefined) && player.detail.target.getCurrentTime().toFixed(2);
+		oprerations = [...oprerations,{type: "Video Ended", date: now(), videoTime: curTime}]
+		console.log($allData)
 	}
-
-	 const options = {
+	now
+	const options = {
 		playerVars: {
 			controls: 1,
-			
+			autoplay: 0,
 		}
 	}
+
   </script>
   
   <style>
@@ -103,8 +119,9 @@
 	:global(.ytvid) {
 		position: relative;
 		overflow: hidden;
-		width: 100vw;
-		padding-top: 56.25%;
+		width: 95vw;
+		padding-top: 47%;
+		display: flex;
 	}
 	:global(#ytvid) {
 		position: absolute;
@@ -114,6 +131,9 @@
 		right: 0;
 		width: 100%;
 		height: 100%;
+	}
+	:global(#movie_player > div.ytp-chrome-top.ytp-show-cards-title) {
+		display: none
 	}
 	.App{
 	  color: #333;
@@ -157,14 +177,15 @@
 	<!-- Dev View to see the variables working -->
 	{#if dev}
 	<div class="dev">
-		<p>Full URL: {window.location.href}</p>
-		<p>Host Name: {window.location.hostname}</p>
-		<p>Path Name: {window.location.pathname}</p>
 		<p>Put a youtube video link to change the video here:</p>
 		<input type="text" bind:value={videoUrl}>
 		<p>Your session time: {onMountTime}</p>
-		<p>Current Watched time: {curTime}</p>
+		<p>Current Watched time: {watchTime}</p>
+		<p>Videos Current time: {curTime}</p>
 		<p>Player State is: {playState}</p>
+		<p>Full URL: {window.location.href}</p>
+		<p>Host Name: {window.location.hostname}</p>
+		<p>Path Name: {window.location.pathname}</p>
 	</div>
 
 	{/if}
