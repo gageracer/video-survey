@@ -19,15 +19,23 @@
 	$: console.log(videoId)
 	// TODO: Cookies Part 
 	
+	const vidLinkCheck = (link: string) => {
+		const regex = /\w{11}/
+		return isNoError && link.match(regex) ? 
+		link.toString().length == 11 ? true : false :false
+	}
+	
+
 	// document.cookie("Set-Cookie: third_party_var=value; SameSite=None; Secure");
 	//console.log(document.cookie)
 	// All the tracked data
-	let regex = /(?<=\?v=)\w+/
+	const regex = /(?<=\?v=)\w{11}/g
 	let onMountTime = 0;
 	let videoUrl = "https://www.youtube.com/watch?v=UkQCuJgKT5g"
 	let videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
 	let dev = false;
-	let linkValid = true;
+	let isNoError = true;
+	let linkValid = vidLinkCheck(videoId)
 	let player: any;
 	let watchTime = 0;
 	let playState = "not started yet";
@@ -35,9 +43,9 @@
 	let curTime = 0;
 	let oprerations = [{type: "", date: "", videoTime: 0}]
 	
-
+	console.log(linkValid)
 	// All the reactive variables
-	// $: videoId = videoUrl.match(regex)!.toString();
+	$: videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
 
 	// The Store Update Part
 	$: {
@@ -68,12 +76,12 @@
 		//console.log(dev," and code is: ",cheatCode)
 	}
 	
+	// YT Player Event Listeners
 	const onReady = (event: Event) => { 
 		player = event; 
 		oprerations = [...oprerations,{type: "Video Loaded", date: now(), videoTime: 0}]
 		console.log(player.detail.target.getIframe())
 		playState = "loaded"
-		linkValid = true
 	}
 
 	const onPlay = () => {
@@ -93,7 +101,6 @@
 
 	const onEnd = () => { 
 		playState = "Ended";
-		//console.log("ended ",now())
 		clearInterval(vidInterval)
 		curTime = (player != undefined) && player.detail.target.getCurrentTime().toFixed(2);
 		oprerations = [...oprerations,{type: "Video Ended", date: now(), videoTime: curTime}]
@@ -101,15 +108,16 @@
 	}
 
 	const onError = () => {
-		linkValid = false
+		isNoError = false;
 	}
+
 	const options = {
 		playerVars: {
 			controls: 1,
 			autoplay: 0,
 		}
 	}
-
+	// YT Player Stuff Ends
   </script>
   
   <style>
