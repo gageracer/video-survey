@@ -9,6 +9,7 @@
 		const interval2 = setInterval(() => onMountTime++, 1000);
 		checkIdVid().then(res => {
 			linkValid = res
+			loading = false
 			sendFirstData()
 		})
 		return () => {
@@ -39,6 +40,7 @@
 
 	// All the tracked data
 	let linkValid: boolean 
+	let loading = true;
 	let player: any
 	let watchTime = 0
 	let onMountTime = 0
@@ -49,7 +51,7 @@
 	let sUrl = `https://video-test-3a5aa-default-rtdb.firebaseio.com/${dataDate}/${videoId}.json`
 	// let dataName = (dated()+"-"+videoId).toString()
 	// All the reactive variables
-	$: videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
+	// $: videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
 	
 	// The Store Update Part
 	$: {
@@ -198,7 +200,7 @@
 	}
 
 	const onError = () => {
-		isNoError = false;
+		console.log("yt error")
 	}
 
 	const options = {
@@ -211,6 +213,61 @@
   </script>
   
   <style>
+	  .lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgb(243, 120, 120);
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
 	:global(html,body) {
 		position: relative;
 		width: 100%;
@@ -277,21 +334,23 @@
 
   <svelte:window on:beforeunload={sendData}/>
   <main class="App">
-	
-	{#if linkValid}
-		<YouTube
-			{videoId}   
-			id="ytvid"
-			class={"ytvid"}
-			{options}
-			on:play={onPlay} 
-			on:pause={onPause}  
-			on:ready={onReady}
-			on:end={onEnd}
-			on:error={onError}
-		/>	 
+	{#if loading}
+		 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
 	{:else}
-		 <p>Invalid Link</p>
+		{#if linkValid}
+			<YouTube
+				{videoId}   
+				id="ytvid"
+				class={"ytvid"}
+				{options}
+				on:play={onPlay} 
+				on:pause={onPause}  
+				on:ready={onReady}
+				on:end={onEnd}
+				on:error={onError}
+			/>	 
+		{/if}
+
 	{/if}
 
 	<!-- Dev View to see the variables working -->
