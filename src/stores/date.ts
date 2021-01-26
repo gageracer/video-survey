@@ -10,3 +10,8 @@
 export function now() {
     return new Date().toString()
 }
+
+export function dated() {
+    const time = new Date()
+    return (time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate()).toString()
+}

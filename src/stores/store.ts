@@ -1,14 +1,12 @@
 import { writable } from 'svelte/store'
 import { now } from './date'
 
-// let videoId = "ch0NEbfP0kY";
-// let dev = true;
-// let player: any;
-// let curTime = 0;
-// let playState = "not started yet";
-
 
 export const allData = writable({
+    id: "",
+    uId: "",
+    partId: "",
+    userAgent: navigator.userAgent,
     linkId: "",
     videoLink: "",
     date: now(),
@@ -22,3 +20,5 @@ export const allData = writable({
         },
     ]
 })
+
+

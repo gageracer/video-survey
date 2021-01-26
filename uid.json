@@ -1,0 +1,14 @@
+{
+    "userId": {
+            "abcde": {
+              "visited" : 0
+            },
+            "abcde1": {
+                "visited": 0
+            },
+            "abcde2": {
+                "visited": 0
+            }
+    }
+
+}

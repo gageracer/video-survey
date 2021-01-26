@@ -1,59 +1,147 @@
 <script lang='typescript'>
-	import {onMount} from 'svelte';
+	import { onMount } from 'svelte';
 	import YouTube from 'svelte-youtube'
-	import { allData } from './stores/store'
-	import { now } from './stores/date'
+	import { allData} from './stores/store'
+	import { now,dated } from './stores/date'
 	
 	onMount(() => {
-		oprerations = oprerations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...oprerations,{type: "Site Loaded", date: now(), videoTime: 0}]
+		operations = operations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...operations,{type: "Site Loaded", date: now(), videoTime: 0}]
 		const interval2 = setInterval(() => onMountTime++, 1000);
+		checkIdVid().then(res => {
+			linkValid = res
+			sendFirstData()
+		})
 		return () => {
 			clearInterval(interval2);
 		};
 	});
 
 	// Parameters Test
-	let params = (new URL(document.location.href)).searchParams
-	let urlVid = params.get('v') // is the video info
-	let uId = params.get('i')
+	const params = (new URL(document.location.href)).searchParams
+	const urlVid = params.get('v') // is the video info
+	const uId = params.get('i')
+	console.log("uid:",uId)
 	$: console.log(videoId)
 	// TODO: Cookies Part 
 	
-	const vidLinkCheck = (link: string) => {
-		const regex = /\w{11}/
-		return isNoError && link.match(regex) ? 
-		link.toString().length == 11 ? true : false :false
-	}
-	
+
 
 	// document.cookie("Set-Cookie: third_party_var=value; SameSite=None; Secure");
 	//console.log(document.cookie)
-	// All the tracked data
-	const regex = /(?<=\?v=)\w{11}/g
-	let onMountTime = 0;
-	let videoUrl = "https://www.youtube.com/watch?v=UkQCuJgKT5g"
-	let videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
+
+	// System stuff
+	const regex = /(?<=\?v=).{11}/
+	let videoUrl = `https://www.youtube.com/watch?v=${urlVid}`
+	let videoId = urlVid ? urlVid : ""
 	let dev = false;
-	let isNoError = true;
-	let linkValid = vidLinkCheck(videoId)
-	let player: any;
-	let watchTime = 0;
-	let playState = "not started yet";
-	let vidInterval: any;
-	let curTime = 0;
-	let oprerations = [{type: "", date: "", videoTime: 0}]
+	let operations = [{type: "", date: "", videoTime: 0}]
 	
-	console.log(linkValid)
+
+	// All the tracked data
+	let linkValid: boolean 
+	let player: any
+	let watchTime = 0
+	let onMountTime = 0
+	let playState = "not started yet"
+	let vidInterval: any
+	let curTime = 0
+	const dataDate = dated()
+	let sUrl = `https://video-test-3a5aa-default-rtdb.firebaseio.com/${dataDate}/${videoId}.json`
+	// let dataName = (dated()+"-"+videoId).toString()
 	// All the reactive variables
 	$: videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
-
+	
 	// The Store Update Part
 	$: {
-		$allData.linkId = window.location.href;
+		$allData.linkId = window.location.href
 		$allData.videoLink = videoUrl
 		$allData.totalSiteTime = onMountTime
 		$allData.totalWatchTime = watchTime
-		$allData.operations = oprerations
+		$allData.operations = operations
+		if(linkValid) sendData()
+	}
+	
+	const checkIdVid = async() => {
+		let idData = {}
+		let vidData = {}
+		try{
+			// Checking if the userID is true
+			const resId= await fetch(`https://video-test-3a5aa-default-rtdb.firebaseio.com/userId/${uId}.json`)
+			// Checking if the VideoID is true
+			const resVid = await fetch(`https://video-test-3a5aa-default-rtdb.firebaseio.com/videoList/${urlVid}.json`)
+			idData = await resId.json()
+			vidData = await resVid.json()
+			if(vidData && idData){
+				idData = {visited: idData.visited + 1}
+				vidData = {visited: vidData.visited + 1}
+				console.log("userid:",idData)
+				console.log("vidlink:",vidData)
+				
+				// Changing the visited number
+				const secondResId = await fetch(`https://video-test-3a5aa-default-rtdb.firebaseio.com/userId/${uId}.json`,{
+					method: 'PATCH',
+					body: JSON.stringify(idData),
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+				const secondResVid = await fetch(`https://video-test-3a5aa-default-rtdb.firebaseio.com/videoList/${urlVid}.json`,{
+					method: 'PATCH',
+					body: JSON.stringify(vidData),
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+			}else{
+				console.log("goodbye world")
+				return false
+			}
+		} 
+		catch(error) {
+			console.log(error)
+		}
+		return true
+	}
+
+	const sendFirstData = () => {
+		fetch(sUrl,{
+			method: 'POST',
+			body: JSON.stringify($allData),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+		.then(res =>{
+			if(!res.ok){
+				throw new Error('Failed!')
+			}
+			return res.json()
+		})
+		.then(data => {
+			$allData.id = data.name
+			sUrl = `https://video-test-3a5aa-default-rtdb.firebaseio.com/${dataDate}/${videoId}/${$allData.id}.json`
+		})
+		.catch(err =>{
+			console.log(err)
+		})
+	}
+	const sendData = () => {
+		fetch(sUrl,{
+			method: 'PATCH',
+			body: JSON.stringify($allData),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+		.then(res =>{
+			if(!res.ok){
+				throw new Error('Failed!')
+			}
+		})
+		.catch(err =>{
+			console.log(err)
+		})
+		return false
 	}
 	
 	// DEVMODE STUFF
@@ -79,7 +167,7 @@
 	// YT Player Event Listeners
 	const onReady = (event: Event) => { 
 		player = event; 
-		oprerations = [...oprerations,{type: "Video Loaded", date: now(), videoTime: 0}]
+		operations = [...operations,{type: "Video Loaded", date: now(), videoTime: 0}]
 		console.log(player.detail.target.getIframe())
 		playState = "loaded"
 	}
@@ -89,22 +177,24 @@
 		clearInterval(vidInterval)
 		vidInterval = setInterval(() => {(watchTime += 0.25)}, 250);
 		curTime = (player != undefined) && player.detail.target.getCurrentTime().toFixed(2);
-		oprerations = [...oprerations,{type: "Video Playing", date: now(), videoTime: curTime}]
+		operations = [...operations,{type: "Video Playing", date: now(), videoTime: curTime}]
 	}
 
 	const onPause = () => {
 		playState = "paused"
 		clearInterval(vidInterval)
 		curTime = (player != undefined) && player.detail.target.getCurrentTime().toFixed(2);
-		oprerations = [...oprerations,{type: "Video Paused", date: now(), videoTime: curTime}]
+		operations = [...operations,{type: "Video Paused", date: now(), videoTime: curTime}]
 	}
 
 	const onEnd = () => { 
 		playState = "Ended";
 		clearInterval(vidInterval)
 		curTime = (player != undefined) && player.detail.target.getCurrentTime().toFixed(2);
-		oprerations = [...oprerations,{type: "Video Ended", date: now(), videoTime: curTime}]
+		operations = [...operations,{type: "Video Ended", date: now(), videoTime: curTime}]
 		console.log($allData)
+		// setTimeout(()=>sendData(), 5000)
+		//clearTimeout()
 	}
 
 	const onError = () => {
@@ -184,6 +274,8 @@
 	}
   </style>
   
+
+  <svelte:window on:beforeunload={sendData}/>
   <main class="App">
 	
 	{#if linkValid}
@@ -215,6 +307,7 @@
 		<p>Host Name: {window.location.hostname}</p>
 		<p>Path Name: {window.location.pathname}</p>
 		<p>Parameters: {params}</p>
+		<p>{$allData.userAgent}</p>
 	</div>
 
 	{/if}
