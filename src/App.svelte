@@ -7,10 +7,12 @@
 	onMount(() => {
 		operations = operations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...operations,{type: "Site Loaded", date: now(), videoTime: 0}]
 		const interval2 = setInterval(() => onMountTime++, 1000);
+		
 		checkIdVid().then(res => {
 			loading = false
 			if(linkValid)sendFirstData()
 		})
+
 		return () => {
 			clearInterval(interval2);
 		};
@@ -38,6 +40,7 @@
 	// Special trackers
 	let linkValid = false
 	let firstsent = false
+	let siteVisible = true
 	let loading = true
 	// All the tracked data
 	let player: any
@@ -64,7 +67,18 @@
 			sendData()
 		} 
 	}
-	
+	// Check if the screen if visible or not
+
+	document.addEventListener("visibilitychange", function() {
+		if (document.visibilityState === 'visible') {
+			operations = [...operations,{type: "Screen Visible", date: now(), videoTime: curTime}]
+			siteVisible = true
+		} else {
+			operations = [...operations,{type: "Screen Hidden", date: now(), videoTime: curTime}]
+			siteVisible = false
+		}
+	});
+
 	const checkIdVid = async() => {
 		let idData : {} 
 		let vidData : {}
@@ -341,7 +355,7 @@
   </style>
   
 
-  <svelte:window on:beforeunload={sendData}/>
+  <svelte:window on:beforeunload={sendData} />
   <main class="App">
 	{#if loading}
 		 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
