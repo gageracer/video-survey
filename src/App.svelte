@@ -1,16 +1,15 @@
 <script lang='typescript'>
 	import { onMount } from 'svelte';
 	import YouTube from 'svelte-youtube'
-	import { allData} from './stores/store'
+	import { allData, isEmpty} from './stores/store'
 	import { now,dated } from './stores/date'
 	
 	onMount(() => {
 		operations = operations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...operations,{type: "Site Loaded", date: now(), videoTime: 0}]
 		const interval2 = setInterval(() => onMountTime++, 1000);
 		checkIdVid().then(res => {
-			linkValid = res
 			loading = false
-			sendFirstData()
+			if(linkValid)sendFirstData()
 		})
 		return () => {
 			clearInterval(interval2);
@@ -22,7 +21,7 @@
 	const urlVid = params.get('v') // is the video info
 	const uId = params.get('i')
 	console.log("uid:",uId)
-	$: console.log(videoId)
+	$: console.log("videoId:",videoId)
 	// TODO: Cookies Part 
 	
 
@@ -31,16 +30,16 @@
 	//console.log(document.cookie)
 
 	// System stuff
-	const regex = /(?<=\?v=).{11}/
+	//const regex = /(?<=\?v=).{11}/
 	let videoUrl = `https://www.youtube.com/watch?v=${urlVid}`
 	let videoId = urlVid ? urlVid : ""
 	let dev = false;
 	let operations = [{type: "", date: "", videoTime: 0}]
-	
-
+	// Special trackers
+	let linkValid = false
+	let firstsent = false
+	let loading = true
 	// All the tracked data
-	let linkValid: boolean 
-	let loading = true;
 	let player: any
 	let watchTime = 0
 	let onMountTime = 0
@@ -48,7 +47,7 @@
 	let vidInterval: any
 	let curTime = 0
 	const dataDate = dated()
-	let sUrl = `https://video-test-3a5aa-default-rtdb.firebaseio.com/${dataDate}/${videoId}.json`
+	let sUrl = videoId ? `https://video-test-3a5aa-default-rtdb.firebaseio.com/data/${dataDate}/${videoId}.json`: null
 	// let dataName = (dated()+"-"+videoId).toString()
 	// All the reactive variables
 	// $: videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
@@ -60,12 +59,15 @@
 		$allData.totalSiteTime = onMountTime
 		$allData.totalWatchTime = watchTime
 		$allData.operations = operations
-		if(linkValid) sendData()
+		
+		if(firstsent && linkValid){
+			sendData()
+		} 
 	}
 	
 	const checkIdVid = async() => {
-		let idData = {}
-		let vidData = {}
+		let idData : {} 
+		let vidData : {}
 		try{
 			// Checking if the userID is true
 			const resId= await fetch(`https://video-test-3a5aa-default-rtdb.firebaseio.com/userId/${uId}.json`)
@@ -73,7 +75,8 @@
 			const resVid = await fetch(`https://video-test-3a5aa-default-rtdb.firebaseio.com/videoList/${urlVid}.json`)
 			idData = await resId.json()
 			vidData = await resVid.json()
-			if(vidData && idData){
+
+			if( !isEmpty(vidData) && !isEmpty(idData) ){
 				idData = {visited: idData.visited + 1}
 				vidData = {visited: vidData.visited + 1}
 				console.log("userid:",idData)
@@ -94,8 +97,11 @@
 						'Content-Type': 'application/json'
 					}
 				})
+
+				linkValid = true
 			}else{
-				console.log("goodbye world")
+				linkValid = false
+				console.log("It aint valid")
 				return false
 			}
 		} 
@@ -121,12 +127,15 @@
 		})
 		.then(data => {
 			$allData.id = data.name
-			sUrl = `https://video-test-3a5aa-default-rtdb.firebaseio.com/${dataDate}/${videoId}/${$allData.id}.json`
+			sUrl = `https://video-test-3a5aa-default-rtdb.firebaseio.com/data/${dataDate}/${videoId}/${$allData.id}.json`
+			console.log("first data sent")
+			firstsent = true
 		})
 		.catch(err =>{
 			console.log(err)
 		})
 	}
+
 	const sendData = () => {
 		fetch(sUrl,{
 			method: 'PATCH',
@@ -213,61 +222,61 @@
   </script>
   
   <style>
-	  .lds-ellipsis {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-.lds-ellipsis div {
-  position: absolute;
-  top: 33px;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: rgb(243, 120, 120);
-  animation-timing-function: cubic-bezier(0, 1, 1, 0);
-}
-.lds-ellipsis div:nth-child(1) {
-  left: 8px;
-  animation: lds-ellipsis1 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(2) {
-  left: 8px;
-  animation: lds-ellipsis2 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(3) {
-  left: 32px;
-  animation: lds-ellipsis2 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(4) {
-  left: 56px;
-  animation: lds-ellipsis3 0.6s infinite;
-}
-@keyframes lds-ellipsis1 {
-  0% {
-    transform: scale(0);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-@keyframes lds-ellipsis3 {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(0);
-  }
-}
-@keyframes lds-ellipsis2 {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(24px, 0);
-  }
-}
+	.lds-ellipsis {
+		display: inline-block;
+		position: relative;
+		width: 80px;
+		height: 80px;
+	}
+	.lds-ellipsis div {
+	position: absolute;
+	top: 33px;
+	width: 13px;
+	height: 13px;
+	border-radius: 50%;
+	background: rgb(243, 120, 120);
+	animation-timing-function: cubic-bezier(0, 1, 1, 0);
+	}
+	.lds-ellipsis div:nth-child(1) {
+	left: 8px;
+	animation: lds-ellipsis1 0.6s infinite;
+	}
+	.lds-ellipsis div:nth-child(2) {
+	left: 8px;
+	animation: lds-ellipsis2 0.6s infinite;
+	}
+	.lds-ellipsis div:nth-child(3) {
+	left: 32px;
+	animation: lds-ellipsis2 0.6s infinite;
+	}
+	.lds-ellipsis div:nth-child(4) {
+	left: 56px;
+	animation: lds-ellipsis3 0.6s infinite;
+	}
+	@keyframes lds-ellipsis1 {
+	0% {
+		transform: scale(0);
+	}
+	100% {
+		transform: scale(1);
+	}
+	}
+	@keyframes lds-ellipsis3 {
+	0% {
+		transform: scale(1);
+	}
+	100% {
+		transform: scale(0);
+	}
+	}
+	@keyframes lds-ellipsis2 {
+	0% {
+		transform: translate(0, 0);
+	}
+	100% {
+		transform: translate(24px, 0);
+	}
+	}
 	:global(html,body) {
 		position: relative;
 		width: 100%;

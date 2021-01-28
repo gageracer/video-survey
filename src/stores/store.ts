@@ -22,3 +22,7 @@ export const allData = writable({
 })
 
 
+export function isEmpty(obj: object) {
+    for (var i in obj) return false;
+    return true;
+}
