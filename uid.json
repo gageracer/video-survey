@@ -1,13 +1,17 @@
 {
     "userId": {
             "abcde": {
-              "visited" : 0
+                "visited": 0
             },
             "abcde1": {
                 "visited": 0
             },
             "abcde2": {
                 "visited": 0
+            },
+            "heys": {
+                "visited": 0,
+                "videosVisited": { "urlvid": 0, "afef": 0}
             }
     }
 

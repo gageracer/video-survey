@@ -21,7 +21,7 @@
 	// Parameters Test
 	const params = (new URL(document.location.href)).searchParams
 	const urlVid = params.get('v') // is the video info
-	const uId = params.get('i')
+	const uId = params.get('i') || ""
 	console.log("uid:",uId)
 	$: console.log("videoId:",videoId)
 	// TODO: Cookies Part 
@@ -62,7 +62,7 @@
 		$allData.totalSiteTime = onMountTime
 		$allData.totalWatchTime = watchTime
 		$allData.operations = operations
-		
+		$allData.partId = uId
 		if(firstsent && linkValid){
 			sendData()
 		} 
@@ -84,9 +84,9 @@
 		let vidData : {}
 		try{
 			// Checking if the userID is true
-			const resId= await fetch(`https://video-test-3a5aa-default-rtdb.firebaseio.com/userId/${uId}.json`)
+			const resId= await fetch(`https://video-test-3a5aa-users-rtdb.firebaseio.com/userId/${uId}.json`)
 			// Checking if the VideoID is true
-			const resVid = await fetch(`https://video-test-3a5aa-default-rtdb.firebaseio.com/videoList/${urlVid}.json`)
+			const resVid = await fetch(`https://video-test-3a5aa-videos-rtdb.firebaseio.com/videoList/${urlVid}.json`)
 			idData = await resId.json()
 			vidData = await resVid.json()
 
@@ -97,14 +97,14 @@
 				console.log("vidlink:",vidData)
 				
 				// Changing the visited number
-				const secondResId = await fetch(`https://video-test-3a5aa-default-rtdb.firebaseio.com/userId/${uId}.json`,{
+				const secondResId = await fetch(`https://video-test-3a5aa-users-rtdb.firebaseio.com/userId/${uId}.json`,{
 					method: 'PATCH',
 					body: JSON.stringify(idData),
 					headers: {
 						'Content-Type': 'application/json'
 					}
 				})
-				const secondResVid = await fetch(`https://video-test-3a5aa-default-rtdb.firebaseio.com/videoList/${urlVid}.json`,{
+				const secondResVid = await fetch(`https://video-test-3a5aa-videos-rtdb.firebaseio.com/videoList/${urlVid}.json`,{
 					method: 'PATCH',
 					body: JSON.stringify(vidData),
 					headers: {
@@ -126,7 +126,7 @@
 	}
 
 	const sendFirstData = () => {
-		fetch(sUrl,{
+		sUrl && fetch(sUrl,{
 			method: 'POST',
 			body: JSON.stringify($allData),
 			headers: {
@@ -151,7 +151,7 @@
 	}
 
 	const sendData = () => {
-		fetch(sUrl,{
+		sUrl && fetch(sUrl,{
 			method: 'PATCH',
 			body: JSON.stringify($allData),
 			headers: {

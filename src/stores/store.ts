@@ -1,10 +1,8 @@
 import { writable } from 'svelte/store'
 import { now } from './date'
 
-
 export const allData = writable({
     id: "",
-    uId: "",
     partId: "",
     userAgent: navigator.userAgent,
     linkId: "",
@@ -20,7 +18,6 @@ export const allData = writable({
         },
     ]
 })
-
 
 export function isEmpty(obj: object) {
     for (var i in obj) return false;
