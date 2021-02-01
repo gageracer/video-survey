@@ -50,7 +50,7 @@
 	let vidInterval: any
 	let curTime = 0
 	const dataDate = dated()
-	let sUrl = videoId ? `https://video-test-3a5aa-default-rtdb.firebaseio.com/data/${dataDate}/${videoId}.json`: null
+	let sUrl = videoId && uId ? `https://video-test-3a5aa-default-rtdb.firebaseio.com/data/${dataDate}/${videoId}/${uId}.json`: null
 	// let dataName = (dated()+"-"+videoId).toString()
 	// All the reactive variables
 	// $: videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
@@ -141,7 +141,7 @@
 		})
 		.then(data => {
 			$allData.id = data.name
-			sUrl = `https://video-test-3a5aa-default-rtdb.firebaseio.com/data/${dataDate}/${videoId}/${$allData.id}.json`
+			sUrl = `https://video-test-3a5aa-default-rtdb.firebaseio.com/data/${dataDate}/${videoId}/${uId}/${$allData.id}.json`
 			console.log("first data sent")
 			firstsent = true
 		})
