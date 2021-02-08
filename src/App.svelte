@@ -1,9 +1,10 @@
 <script lang='typescript'>
 	import { onMount } from 'svelte';
 	import YouTube from 'svelte-youtube'
-	import { allData, isEmpty} from './stores/store'
+	import { allData, params, isEmpty} from './stores/store'
 	import { now,dated } from './stores/date'
-	
+	import Admin from './components/Admin.svelte'
+
 	onMount(() => {
 		operations = operations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...operations,{type: "Site Loaded", date: now(), videoTime: 0}]
 		const interval2 = setInterval(() => onMountTime++, 1000);
@@ -19,23 +20,18 @@
 	});
 
 	// Parameters Test
-	const params = (new URL(document.location.href)).searchParams
-	const urlVid = params.get('v') // is the video info
-	const uId = params.get('i') || ""
-	console.log("uid:",uId)
-	$: console.log("videoId:",videoId)
+	const urlVid = $params.v // is the video info
+	const uId = $params.i
+	// console.log("uid:",uId)
+	// $: console.log("videoId:",videoId)
 	// TODO: Cookies Part 
 	
-
-
-	// document.cookie("Set-Cookie: third_party_var=value; SameSite=None; Secure");
-	//console.log(document.cookie)
 
 	// System stuff
 	//const regex = /(?<=\?v=).{11}/
 	let videoUrl = `https://www.youtube.com/watch?v=${urlVid}`
 	let videoId = urlVid ? urlVid : ""
-	let dev = false;
+	let dev = false
 	let operations = [{type: "", date: "", videoTime: 0}]
 	// Special trackers
 	let linkValid = false
@@ -50,7 +46,7 @@
 	let vidInterval: any
 	let curTime = 0
 	const dataDate = dated()
-	let sUrl = videoId && uId ? `https://video-test-3a5aa-default-rtdb.firebaseio.com/data/${dataDate}/${videoId}/${uId}.json`: null
+	let sUrl = videoId && uId ? `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}.json`: null
 	// let dataName = (dated()+"-"+videoId).toString()
 	// All the reactive variables
 	// $: videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
@@ -68,7 +64,6 @@
 		} 
 	}
 	// Check if the screen if visible or not
-
 	document.addEventListener("visibilitychange", function() {
 		if (document.visibilityState === 'visible') {
 			operations = [...operations,{type: "Screen Visible", date: now(), videoTime: curTime}]
@@ -80,38 +75,40 @@
 	});
 
 	const checkIdVid = async() => {
-		let idData : {} 
-		let vidData : {}
+		let idData : {visited: number} 
+		let vidData : {visited: number} 
+		const vidDate = $params.d.slice(0,4)+ "-" + $params.d.slice(4,6)+ "-" + $params.d.slice(6,8)
+		if(uId == "" && urlVid == "") return false
 		try{
 			// Checking if the userID is true
-			const resId= await fetch(`https://video-test-3a5aa-users-rtdb.firebaseio.com/userId/${uId}.json`)
-			// Checking if the VideoID is true
-			const resVid = await fetch(`https://video-test-3a5aa-videos-rtdb.firebaseio.com/videoList/${urlVid}.json`)
+			const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}.json`)
 			idData = await resId.json()
+			// Checking if the VideoID is true
+			const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v[0]}/${$params.v[1]}.json`)
 			vidData = await resVid.json()
-
+			console.log(vidData)
 			if( !isEmpty(vidData) && !isEmpty(idData) ){
-				idData = {visited: idData.visited + 1}
-				vidData = {visited: vidData.visited + 1}
-				console.log("userid:",idData)
-				console.log("vidlink:",vidData)
+				idData = {...idData, visited: idData.visited + 1}
+				vidData = {...vidData, visited: vidData.visited + 1}
+				// console.log("userid:",idData)
+				// console.log("vidlink:",vidData)
 				
 				// Changing the visited number
-				const secondResId = await fetch(`https://video-test-3a5aa-users-rtdb.firebaseio.com/userId/${uId}.json`,{
+				const secondResId = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}.json`,{
 					method: 'PATCH',
 					body: JSON.stringify(idData),
 					headers: {
 						'Content-Type': 'application/json'
 					}
 				})
-				const secondResVid = await fetch(`https://video-test-3a5aa-videos-rtdb.firebaseio.com/videoList/${urlVid}.json`,{
+				const secondResVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v[0]}/${$params.v[1]}.json`,{
 					method: 'PATCH',
 					body: JSON.stringify(vidData),
 					headers: {
 						'Content-Type': 'application/json'
 					}
 				})
-
+				videoId = vidData.videoId
 				linkValid = true
 			}else{
 				linkValid = false
@@ -141,7 +138,7 @@
 		})
 		.then(data => {
 			$allData.id = data.name
-			sUrl = `https://video-test-3a5aa-default-rtdb.firebaseio.com/data/${dataDate}/${videoId}/${uId}/${$allData.id}.json`
+			sUrl = `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}/${$allData.id}.json`
 			console.log("first data sent")
 			firstsent = true
 		})
@@ -193,7 +190,7 @@
 	const onReady = (event: Event) => { 
 		player = event; 
 		operations = [...operations,{type: "Video Loaded", date: now(), videoTime: 0}]
-		console.log(player.detail.target.getIframe())
+		// console.log(player.detail.target.getIframe())
 		playState = "loaded"
 	}
 
@@ -217,7 +214,7 @@
 		clearInterval(vidInterval)
 		curTime = (player != undefined) && player.detail.target.getCurrentTime().toFixed(2);
 		operations = [...operations,{type: "Video Ended", date: now(), videoTime: curTime}]
-		console.log($allData)
+		// console.log($allData)
 		// setTimeout(()=>sendData(), 5000)
 		//clearTimeout()
 	}
@@ -336,22 +333,7 @@
 	  justify-content: center;
 	  font-size: calc(10px + 2vmin);
 	}
-	.dev {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		justify-content: center;
-		width: 50vw;
-		font-size: 1.2rem;
-		background-color: lightblue;
-		padding-left:1rem;
-	}
 
-	.dev>input {
-		width: 95%;
-		height: 2em;
-		font-size: 1.2rem;
-	}
   </style>
   
 
@@ -378,20 +360,10 @@
 
 	<!-- Dev View to see the variables working -->
 	{#if dev}
-	<div class="dev">
-		<p>Put a youtube video link to change the video here:</p>
-		<input type="text" bind:value={videoUrl}>
-		<p>Your session time: {onMountTime}</p>
-		<p>Current Watched time: {watchTime}</p>
-		<p>Videos Current time: {curTime}</p>
-		<p>Player State is: {playState}</p>
-		<p>Full URL: {window.location.href}</p>
-		<p>Host Name: {window.location.hostname}</p>
-		<p>Path Name: {window.location.pathname}</p>
-		<p>Parameters: {params}</p>
-		<p>{$allData.userAgent}</p>
-	</div>
-
+	<Admin
+		{videoUrl} {onMountTime} {watchTime }
+		{curTime} {playState} userAgent={$allData.userAgent}
+	/>
 	{/if}
 </main>
   
