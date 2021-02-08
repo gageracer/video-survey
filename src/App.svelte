@@ -81,7 +81,7 @@
 		if(uId == "" && urlVid == "") return false
 		try{
 			// Checking if the userID is true
-			const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}.json`)
+			const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${$params.v[0]}/${uId}.json`)
 			idData = await resId.json()
 			// Checking if the VideoID is true
 			const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v[0]}/${$params.v[1]}.json`)
@@ -90,11 +90,11 @@
 			if( !isEmpty(vidData) && !isEmpty(idData) ){
 				idData = {...idData, visited: idData.visited + 1}
 				vidData = {...vidData, visited: vidData.visited + 1}
-				// console.log("userid:",idData)
-				// console.log("vidlink:",vidData)
+				console.log("userid:",idData)
+				console.log("vidlink:",vidData)
 				
 				// Changing the visited number
-				const secondResId = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}.json`,{
+				const secondResId = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${$params.v[0]}/${uId}.json`,{
 					method: 'PATCH',
 					body: JSON.stringify(idData),
 					headers: {

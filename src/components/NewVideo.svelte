@@ -6,6 +6,10 @@
     let videoDate: string
     let videoId: string | null
 
+    let newLink = false
+    let newLinks : {}[]
+    let data : string
+
     // Checking the form inputs
     const checkInputs = () => {
         const regex = /(?<=\?v=).{11}/
@@ -21,6 +25,7 @@
         if(!checkInputs()) return false
 
         try {
+            newLink = false
             const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${videoDate}/${videoGroup[0]}/${videoGroup[1]}.json`,{
                 method: 'PUT',
                 body: JSON.stringify(
@@ -44,9 +49,37 @@
         } catch (error) {
             console.log(error)
         }
+        generateLinks()
         return true
     }
 
+    const generateLinks = async() => {
+        let d = videoDate.replaceAll('-','')
+        let v = videoGroup
+        const date = parseInt(d?.slice(-4)!,10)
+        const vidId = parseInt(v.charCodeAt(0).toString(4),10)
+        
+        const link = (d: string,i:number,v:string,r:number) => {return { [i] : `https://whatsappstudy2021.vercel.app/?d=${d}&i=${i}&v=${v}&r=${r}`} }
+        
+        try{
+            // Checking if the userID is true
+                const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${v[0]}.json`)
+                let idData = Object.keys(await resId.json())
+                idData.forEach(el => {
+                    console.log(el)
+                    const id = parseInt(el!,10)
+                    const result = date ^ id ^ vidId
+                    newLinks = newLinks ? [...newLinks, link(d,id,v,result)] : [link(d,id,v,result)]
+                    console.log(newLinks)
+                });
+        }
+        catch(error) {
+			console.log(error)
+        }
+        data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(newLinks))
+        newLink = true
+		return true
+    }
 </script>
 
 <style>
@@ -79,6 +112,10 @@
 </style>
 
      <div class="dev">
+        {#if newLink}
+             <p>Here is the links for the users:</p>
+             <a href="{`data:${data}`}" download="{`links_${videoDate}_${videoGroup}_${videoName}.json`}">download JSON</a>
+        {/if}
         <p>All are mandatory. Youtube Video Link:</p>
         <input type="text" placeholder="example: https://www.youtube.com/watch?v=lo2GmBahoyI" bind:value={videoUrl}>
         <p>Video Group:</p>
