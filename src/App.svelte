@@ -46,7 +46,7 @@
 	let vidInterval: any
 	let curTime = 0
 	const dataDate = dated()
-	let sUrl = videoId && uId ? `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}.json`: null
+	let sUrl: string
 	// let dataName = (dated()+"-"+videoId).toString()
 	// All the reactive variables
 	// $: videoId = urlVid ? urlVid : videoUrl.match(regex)!.toString()
@@ -109,6 +109,7 @@
 					}
 				})
 				videoId = vidData.videoId
+				sUrl = `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}.json`
 				linkValid = true
 			}else{
 				linkValid = false
