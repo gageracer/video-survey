@@ -82,7 +82,7 @@
         <p>All are mandatory. Youtube Video Link:</p>
         <input type="text" placeholder="example: https://www.youtube.com/watch?v=lo2GmBahoyI" bind:value={videoUrl}>
         <p>Video Group:</p>
-        <input type="text" placeholder="example: a" bind:value={videoGroup}>
+        <input type="text" placeholder="example: a1" bind:value={videoGroup}>
         <p>Video Date to Watch:</p>
         <input type="date" placeholder="example: 02-09 (month-day)" bind:value={videoDate}>
         <p>Video Name:</p>
