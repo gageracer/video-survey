@@ -81,10 +81,10 @@
 		if(uId == "" && urlVid == "") return false
 		try{
 			// Checking if the userID is true
-			const resId= await fetch(`${(process.env.SNOWPACK_PUBLIC_USER_URL)}userId/${$params.v[0]}/${uId}.json`)
+			const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${$params.v[0]}/${uId}.json`)
 			idData = await resId.json()
 			// Checking if the VideoID is true
-			const resVid = await fetch(`${(process.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v[0]}/${$params.v[1]}.json`)
+			const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v[0]}/${$params.v[1]}.json`)
 			vidData = await resVid.json()
 			console.log(vidData)
 			if( !isEmpty(vidData) && !isEmpty(idData) ){
@@ -94,14 +94,14 @@
 				console.log("vidlink:",vidData)
 				
 				// Changing the visited number
-				const secondResId = await fetch(`${(process.env.SNOWPACK_PUBLIC_USER_URL)}userId/${$params.v[0]}/${uId}.json`,{
+				const secondResId = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${$params.v[0]}/${uId}.json`,{
 					method: 'PATCH',
 					body: JSON.stringify(idData),
 					headers: {
 						'Content-Type': 'application/json'
 					}
 				})
-				const secondResVid = await fetch(`${(process.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v[0]}/${$params.v[1]}.json`,{
+				const secondResVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v[0]}/${$params.v[1]}.json`,{
 					method: 'PATCH',
 					body: JSON.stringify(vidData),
 					headers: {
@@ -109,7 +109,7 @@
 					}
 				})
 				videoId = vidData.videoId
-				sUrl = `${(process.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}.json`
+				sUrl = `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}.json`
 				linkValid = true
 			}else{
 				linkValid = false
@@ -139,7 +139,7 @@
 		})
 		.then(data => {
 			$allData.id = data.name
-			sUrl = `${(process.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}/${$allData.id}.json`
+			sUrl = `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}/${$allData.id}.json`
 			console.log("first data sent")
 			firstsent = true
 		})

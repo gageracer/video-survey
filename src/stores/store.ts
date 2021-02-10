@@ -65,7 +65,7 @@ function checkValidLink( myParams: URLSearchParams, paramsArr: [string,string][]
     // console.log("date is:",date)
     // console.log("id is:",id)
     // console.log("vidId is:",vidId)
-    console.log("validator:",validator," result:",result)
+    //console.log("validator:",validator," result:",result)
     // console.log(result)
     return validator === result
 }
