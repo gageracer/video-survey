@@ -86,12 +86,12 @@
 			// Checking if the VideoID is true
 			const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v[0]}/${$params.v[1]}.json`)
 			vidData = await resVid.json()
-			console.log(vidData)
+			//console.log(vidData)
 			if( !isEmpty(vidData) && !isEmpty(idData) ){
 				idData = {...idData, visited: idData.visited + 1}
 				vidData = {...vidData, visited: vidData.visited + 1}
-				console.log("userid:",idData)
-				console.log("vidlink:",vidData)
+				//("userid:",idData)
+				//console.log("vidlink:",vidData)
 				
 				// Changing the visited number
 				const secondResId = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${$params.v[0]}/${uId}.json`,{
@@ -140,7 +140,7 @@
 		.then(data => {
 			$allData.id = data.name
 			sUrl = `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}/${$allData.id}.json`
-			console.log("first data sent")
+			//console.log("first data sent")
 			firstsent = true
 		})
 		.catch(err =>{

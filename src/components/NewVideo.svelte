@@ -67,12 +67,12 @@
                 const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${v[0]}.json`)
                 let idData = Object.keys(await resId.json())
                 idData.forEach(el => {
-                    console.log(el)
+                    //console.log(el)
                     const id = parseInt(el!,10)
                     const mid = date ^ id ^ vidId
                     const result = ntos($salt.map( x => (x ^ mid) % 512))
                     newLinks = newLinks ? [...newLinks, link(d,id,v,result)] : [link(d,id,v,result)]
-                    console.log(newLinks)
+                    //console.log(newLinks)
                 });
         }
         catch(error) {
