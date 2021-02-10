@@ -27,7 +27,7 @@
 
         try {
             newLink = false
-            const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${videoDate}/${videoGroup[0]}/${videoGroup[1]}.json`,{
+            const resVid = await fetch(`${(process.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${videoDate}/${videoGroup[0]}/${videoGroup[1]}.json`,{
                 method: 'PUT',
                 body: JSON.stringify(
                     {   
@@ -64,7 +64,7 @@
         
         try{
             // Checking if the userID is true
-                const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${v[0]}.json`)
+                const resId= await fetch(`${(process.env.SNOWPACK_PUBLIC_USER_URL)}userId/${v[0]}.json`)
                 let idData = Object.keys(await resId.json())
                 idData.forEach(el => {
                     console.log(el)

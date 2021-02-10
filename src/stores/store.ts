@@ -25,7 +25,6 @@ export const stonA =  (str: string) => {
     for (const key of str) {
         result.push(key.charCodeAt(0))
     }
-    console.log("result is:",result)
     return result
 }
 
