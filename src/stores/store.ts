@@ -1,4 +1,4 @@
-import { writable,readable } from 'svelte/store'
+import { writable,readable,get } from 'svelte/store'
 import { now } from './date'
 
 export const allData = writable({
@@ -19,6 +19,26 @@ export const allData = writable({
     ]
 })
 
+
+export const stonA =  (str: string) => {
+    let result = []
+    for (const key of str) {
+        result.push(key.charCodeAt(0))
+    }
+    console.log("result is:",result)
+    return result
+}
+
+export const salt = readable(stonA("PjbJ"), set => { set(stonA("PjbU"))})
+
+export const ntos = (num: number[]) => {
+    let result = ""
+    for (const key of num) {
+        result += key
+    }
+    return result
+}
+
 export const params = readable({d:"", i:"", v:"", r:""}, set =>{
     if(checkParams()) {
         const myParams = (new URL(document.location.href)).searchParams
@@ -37,15 +57,17 @@ function checkValidLink( myParams: URLSearchParams, paramsArr: [string,string][]
     if(!checkParamsKeys(paramsArr))
         return false
     
-    const validator = parseInt(myParams.get('r')! ,10)
+    const validator = myParams.get('r')
     const date = parseInt(myParams.get('d')?.slice(-4)!,10)
     const id = parseInt(myParams.get('i')!,10)
     const vidId = parseInt(myParams.get('v')?.charCodeAt(0).toString(4)!,10)
-    const result = date ^ id ^ vidId
+    const mid = date ^ id ^ vidId
+    const result = ntos(get(salt).map( x => (x ^ mid) % 512))
     // console.log("date is:",date)
     // console.log("id is:",id)
     // console.log("vidId is:",vidId)
-    // console.log("validator:",validator," result:",result)
+    console.log("validator:",validator," result:",result)
+    // console.log(result)
     return validator === result
 }
 

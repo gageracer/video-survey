@@ -1,5 +1,6 @@
 <script lang='typescript'>
     import NewVideo from './NewVideo.svelte'
+    import { salt} from '../stores/store'
     // Props
     export let videoUrl: string
     export let onMountTime: number
@@ -54,6 +55,7 @@
         <p>Path Name: {window.location.pathname}</p>
         <p>Parameters: {paramNum}</p>
         <p>{userAgent}</p>
+        <p>{$salt}</p>
     </div>
     <button on:click="{() => addVideoPanel = true}">Add Video</button>
 {/if}
