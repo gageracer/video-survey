@@ -1,5 +1,5 @@
 <script lang='typescript'>
-    import NewVideo from './NewVideo.svelte'
+
     
     // Props
     export let videoUrl: string
@@ -44,8 +44,6 @@
     <button on:click="{() => addVideoPanel = false}">Stats</button>   
 {:else}
     <div class="dev">
-        <p>Put a youtube video link to change the video here:</p>
-        <input type="text" bind:value={videoUrl}>
         <p>Your session time: {onMountTime}</p>
         <p>Current Watched time: {watchTime}</p>
         <p>Videos Current time: {curTime}</p>
@@ -57,5 +55,5 @@
         <p>{userAgent}</p>
 
     </div>
-    <button on:click="{() => addVideoPanel = true}">Add Video</button>
+
 {/if}
