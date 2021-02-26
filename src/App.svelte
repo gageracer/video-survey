@@ -83,15 +83,11 @@
 			// Checking if the userID is true
 			const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}/${vidDate}.json`)
 			idData = await resId.json()
-			console.log("idData is:",idData)
 			// Checking if the VideoID is true
 			const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoLink/${vidDate}/${$params.v}.json`)
 			vidData = await resVid.json()
-			console.log("vidData is:",vidData)
-			console.log(idData.groups)
-			console.log(Object.keys(vidData).toString())
-			console.log(idData.groups.includes(Object.keys(vidData).toString() ))
-			if( !isEmpty(vidData) && !isEmpty(idData) ){
+
+			if( !isEmpty(vidData) && !isEmpty(idData) && idData.groups.includes($params.v)){
 				idData = {...idData, visited: idData.visited + 1}
 				vidData = {...vidData, visited: vidData.visited + 1}
 				//("userid:",idData)
