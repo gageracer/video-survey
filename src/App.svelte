@@ -4,16 +4,33 @@
 	import { allData, params, isEmpty, myTok } from './stores/store'
 	import { now,dated } from './stores/date'
 	import Admin from './components/Admin.svelte'
+	import firebase from "firebase/app";
+	import "firebase/auth";
 
 	onMount(async () => {
 		operations = operations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...operations,{type: "Site Loaded", date: now(), videoTime: 0}]
 		const interval2 = setInterval(() => onMountTime++, 1000);
 		
-		console.log("tesrtser",$myTok)
-		await $myTok != "" && checkIdVid().then(res => {
-		loading = false
-			if(linkValid)sendFirstData()
-		})
+		firebase.auth().onAuthStateChanged((user) => {
+    		if (user) {
+        	var uid = user.uid;
+        	firebase.auth().currentUser!.getIdToken(/* forceRefresh */ true).then(function (idToken) {
+            $myTok = idToken
+            console.log("idToken is:", $myTok)
+			checkIdVid().then(res => {
+			loading = false
+				if(linkValid)sendFirstData()
+			})
+			}).catch(function (error) {
+				// Handle error
+				console.log("this function is bad")
+			});
+
+			console.log("state = definitely signed in")
+			} else {
+				console.log("state = definitely signed out")
+			}
+		});
 		
 		return () => {
 			clearInterval(interval2);

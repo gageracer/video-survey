@@ -28,22 +28,7 @@ firebase.auth().signInAnonymously()
         // ...
     });
 
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        var uid = user.uid;
-        firebase.auth().currentUser!.getIdToken(/* forceRefresh */ true).then(function (idToken) {
-            myTok.set(idToken)
-            console.log("idToken is:", get(myTok))
-        }).catch(function (error) {
-            // Handle error
-            console.log("this function is bad")
-        });
 
-        console.log("state = definitely signed in")
-    } else {
-        console.log("state = definitely signed out")
-    }
-});
 
 
 export const myTok = writable("")
