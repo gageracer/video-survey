@@ -87,7 +87,8 @@
 			// Checking if the VideoID is true
 			const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v}.json`)
 			vidData = await resVid.json()
-			console.log(vidData)
+			console.log("vidData is:",vidData)
+			console.log(idData[groups].find(e => e == Object.keys(vidData).toString() ))
 			if( !isEmpty(vidData) && !isEmpty(idData) ){
 				idData = {...idData, visited: idData.visited + 1}
 				vidData = {...vidData, visited: vidData.visited + 1}
