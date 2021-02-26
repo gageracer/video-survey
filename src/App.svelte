@@ -85,7 +85,7 @@
 			idData = await resId.json()
 			console.log("idData is:",idData)
 			// Checking if the VideoID is true
-			const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v}.json`)
+			const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoLink/${vidDate}/${$params.v}.json`)
 			vidData = await resVid.json()
 			console.log("vidData is:",vidData)
 			console.log(idData[groups].find(e => e == Object.keys(vidData).toString() ))
@@ -103,7 +103,7 @@
 						'Content-Type': 'application/json'
 					}
 				})
-				const secondResVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoList/${vidDate}/${$params.v}.json`,{
+				const secondResVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoLink/${vidDate}/${$params.v}.json`,{
 					method: 'PATCH',
 					body: JSON.stringify(vidData),
 					headers: {
