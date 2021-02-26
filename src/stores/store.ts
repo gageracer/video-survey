@@ -28,12 +28,21 @@ firebase.auth().signInAnonymously()
         // ...
     });
 
-firebase.auth().currentUser!.getIdToken(/* forceRefresh */ true).then(function (idToken) {
-    myTok.set(idToken)
-}).catch(function (error) {
-    // Handle error
-    console.log("this function is bad")
+firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        firebase.auth().currentUser!.getIdToken(/* forceRefresh */ true).then(function (idToken) {
+            myTok.set(idToken)
+        }).catch(function (error) {
+            // Handle error
+            console.log("this function is bad")
+        });
+        var uid = user.uid;
+        console.log("state = definitely signed in")
+    } else {
+        console.log("state = definitely signed out")
+    }
 });
+
 
 export const myTok = writable("")
 
