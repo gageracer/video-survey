@@ -33,7 +33,7 @@ firebase.auth().onAuthStateChanged((user) => {
         var uid = user.uid;
         firebase.auth().currentUser!.getIdToken(/* forceRefresh */ true).then(function (idToken) {
             myTok.set(idToken)
-            console.log("idToken is:", idToken)
+            console.log("idToken is:", myTok)
         }).catch(function (error) {
             // Handle error
             console.log("this function is bad")
