@@ -8,7 +8,7 @@
 	onMount(() => {
 		operations = operations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...operations,{type: "Site Loaded", date: now(), videoTime: 0}]
 		const interval2 = setInterval(() => onMountTime++, 1000);
-		console.log("onmount mytok is:",myTok)
+		console.log("onmount mytok is:",$myTok)
 		checkIdVid().then(res => {
 			loading = false
 			if(linkValid)sendFirstData()
