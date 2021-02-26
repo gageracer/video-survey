@@ -30,9 +30,6 @@ firebase.auth().signInAnonymously()
 
 
 
-
-export const myTok = writable("")
-
 export const allData = writable({
     id: "",
     partId: "",
