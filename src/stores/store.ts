@@ -39,7 +39,7 @@ firebase.auth().onAuthStateChanged((user) => {
         });
 
         var uid = user.getIdToken();
-        console.log("uid is:",uid)
+        console.log("uid is:",uid.e)
         console.log("state = definitely signed in",get(myTok))
     } else {
         console.log("state = definitely signed out")
