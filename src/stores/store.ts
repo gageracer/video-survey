@@ -62,11 +62,11 @@ function checkValidLink( myParams: URLSearchParams, paramsArr: [string,string][]
     const vidId = parseInt(myParams.get('v')?.charCodeAt(0).toString(4)!,10)
     const mid = date ^ id ^ vidId
     const result = ntos(get(salt).map( x => (x ^ mid) % 512))
-    // console.log("date is:",date)
-    // console.log("id is:",id)
-    // console.log("vidId is:",vidId)
-    //console.log("validator:",validator," result:",result)
-    // console.log(result)
+    console.log("date is:",date)
+    console.log("id is:",id)
+    console.log("vidId is:",vidId)
+    console.log("validator:",validator," result:",result)
+    console.log(result)
     return validator === result
 }
 
