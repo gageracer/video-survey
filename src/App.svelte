@@ -8,6 +8,7 @@
 	onMount(() => {
 		operations = operations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...operations,{type: "Site Loaded", date: now(), videoTime: 0}]
 		const interval2 = setInterval(() => onMountTime++, 1000);
+		while($myTok == ""){}
 		console.log("tesrtser",$myTok)
 		$myTok && checkIdVid().then(res => {
 		loading = false
