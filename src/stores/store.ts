@@ -28,6 +28,15 @@ firebase.auth().signInAnonymously()
         // ...
     });
 
+firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function (idToken) {
+    myTok.set(idToken)
+}).catch(function (error) {
+    // Handle error
+    console.log("this function is bad")
+});
+
+export const myTok = writable("")
+
 export const allData = writable({
     id: "",
     partId: "",

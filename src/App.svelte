@@ -1,7 +1,7 @@
 <script lang='typescript'>
 	import { onMount } from 'svelte';
 	import YouTube from 'svelte-youtube'
-	import { allData, params, isEmpty} from './stores/store'
+	import { allData, params, isEmpty, myTok } from './stores/store'
 	import { now,dated } from './stores/date'
 	import Admin from './components/Admin.svelte'
 
@@ -81,10 +81,10 @@
 		if(uId == "" && urlVid == "") return false
 		try{
 			// Checking if the userID is true
-			const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}/${vidDate}.json`)
+			const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}/${vidDate}.json?auth=${myTok}`)
 			idData = await resId.json()
 			// Checking if the VideoID is true
-			const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoLink/${vidDate}/${$params.v}.json`)
+			const resVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoLink/${vidDate}/${$params.v}.json?auth=${myTok}`)
 			vidData = await resVid.json()
 			if( !isEmpty(vidData) && !isEmpty(idData) && idData.groups.includes($params.v)){
 				idData = {...idData, visited: idData.visited + 1}
@@ -93,14 +93,14 @@
 				//console.log("vidlink:",vidData)
 				
 				// Changing the visited number
-				const secondResId = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}/${vidDate}.json`,{
+				const secondResId = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}/${vidDate}.json?auth=${myTok}`,{
 					method: 'PATCH',
 					body: JSON.stringify(idData),
 					headers: {
 						'Content-Type': 'application/json'
 					}
 				})
-				const secondResVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoLink/${vidDate}/${$params.v}.json`,{
+				const secondResVid = await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoLink/${vidDate}/${$params.v}.json?auth=${myTok}`,{
 					method: 'PATCH',
 					body: JSON.stringify(vidData),
 					headers: {
@@ -108,7 +108,7 @@
 					}
 				})
 				videoId = vidData.videoId
-				sUrl = `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}.json`
+				sUrl = `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}.json?auth=${myTok}`
 				linkValid = true
 			}else{
 				linkValid = false
@@ -138,7 +138,7 @@
 		})
 		.then(data => {
 			$allData.id = data.name
-			sUrl = `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}/${$allData.id}.json`
+			sUrl = `${(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL)}data/${dataDate}/${videoId}/${uId}/${$allData.id}.json?auth=${myTok}`
 			//console.log("first data sent")
 			firstsent = true
 		})
