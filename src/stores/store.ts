@@ -28,7 +28,7 @@ firebase.auth().signInAnonymously()
         // ...
     });
 
-firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function (idToken) {
+firebase.auth().currentUser!.getIdToken(/* forceRefresh */ true).then(function (idToken) {
     myTok.set(idToken)
 }).catch(function (error) {
     // Handle error
