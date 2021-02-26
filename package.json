@@ -5,6 +5,7 @@
     "test": "web-test-runner \"src/**/*.test.ts\""
   },
   "dependencies": {
+    "firebase": "^8.2.9",
     "svelte": "^3.24.0"
   },
   "devDependencies": {

@@ -1,5 +1,18 @@
 import { writable,readable,get } from 'svelte/store'
 import { now } from './date'
+import firebase from "firebase/app";
+import "firebase/auth";
+
+
+firebase.auth().signInAnonymously()
+    .then(() => {
+        console.log("logged?")
+    })
+    .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ...
+    });
 
 export const allData = writable({
     id: "",
