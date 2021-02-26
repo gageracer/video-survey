@@ -36,8 +36,9 @@ firebase.auth().onAuthStateChanged((user) => {
             // Handle error
             console.log("this function is bad")
         });
+
         var uid = user.uid;
-        console.log("state = definitely signed in")
+        console.log("state = definitely signed in",myTok)
     } else {
         console.log("state = definitely signed out")
     }

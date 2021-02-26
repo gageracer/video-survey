@@ -8,7 +8,7 @@
 	onMount(() => {
 		operations = operations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...operations,{type: "Site Loaded", date: now(), videoTime: 0}]
 		const interval2 = setInterval(() => onMountTime++, 1000);
-		
+		console.log("onmount mytok is:",myTok)
 		checkIdVid().then(res => {
 			loading = false
 			if(linkValid)sendFirstData()
@@ -78,7 +78,7 @@
 		let idData : {visited: number} 
 		let vidData : {visited: number} 
 		const vidDate = $params.d.slice(0,4)+ "-" + $params.d.slice(4,6)+ "-" + $params.d.slice(6,8)
-		if(uId == "" && urlVid == "") return false
+		if(uId == "" || urlVid == "" || $myTok == "") return false
 		try{
 			// Checking if the userID is true
 			const resId= await fetch(`${(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}/${vidDate}.json?auth=${myTok}`)
