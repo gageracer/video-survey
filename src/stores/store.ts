@@ -2,6 +2,7 @@ import { writable,readable,get } from 'svelte/store'
 import { now } from './date'
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/analytics"
 
 var firebaseConfig = {
     apiKey: "AIzaSyBHIiIKu2BjiEJEYb9njVVYm_ZfF1OEg_o",
