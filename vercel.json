@@ -21,5 +21,10 @@
                 }
             ]
         }
-    ]
+    ],
+    "env": {
+        "SNOWPACK_PUBLIC_DATABASE_URL" : "https://video-test-3a5aa-default-rtdb.firebaseio.com/",
+        "SNOWPACK_PUBLIC_VIDEO_URL" : "https://video-test-3a5aa-videos-rtdb.firebaseio.com/",
+        "SNOWPACK_PUBLIC_USER_URL" : "https://video-test-3a5aa-users-rtdb.firebaseio.com/"
+    }
 }
