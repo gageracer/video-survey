@@ -94,7 +94,7 @@ let iv: Uint8Array
 
 function getMessageEncoding(){
     let enc = new TextEncoder()
-    return enc.encode(import.meta.env.SNOWPACK_PUBLIC_USER_URL)
+    return enc.encode(import.meta.build.env.SNOWPACK_PUBLIC_USER_URL)
 }
 
 async function encryptMessage(key: CryptoKey){
