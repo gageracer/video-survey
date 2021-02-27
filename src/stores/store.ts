@@ -1,35 +1,5 @@
 import { writable,readable,get } from 'svelte/store'
 import { now } from './date'
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/analytics"
-
-var firebaseConfig = {
-    apiKey: "AIzaSyBHIiIKu2BjiEJEYb9njVVYm_ZfF1OEg_o",
-    authDomain: "video-test-3a5aa.firebaseapp.com",
-    databaseURL: "https://video-test-3a5aa-default-rtdb.firebaseio.com",
-    projectId: "video-test-3a5aa",
-    storageBucket: "video-test-3a5aa.appspot.com",
-    messagingSenderId: "4975767435",
-    appId: "1:4975767435:web:cb6a59e4b38f00ebbc098e",
-    measurementId: "G-HN6FRCXJKV"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
-
-firebase.auth().signInAnonymously()
-    .then(() => {
-        console.log("logged?")
-    })
-    .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // ...
-    });
-
-
 
 export const allData = writable({
     id: "",
@@ -169,10 +139,10 @@ window.crypto.subtle.generateKey(
     true,
     ["encrypt","decrypt"]
 ).then(async (key) => {
-    console.log("key:", key)
-    console.log("encrypted:",await encryptMessage(key))
+    // console.log("key:", key)
+    // console.log("encrypted:",await encryptMessage(key))
     
-    console.log("decrypted:",await decrpytMessage(key))
+    // console.log("decrypted:",await decrpytMessage(key))
     
 })
 
