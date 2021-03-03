@@ -24,9 +24,9 @@
     ],
     "build": {
         "env": {
-            "SNOWPACK_PUBLIC_DATABASE_URL" : "@snowpack-public-database-url",
-            "SNOWPACK_PUBLIC_VIDEO_URL" : "@snowpack-public-video-url",
-            "SNOWPACK_PUBLIC_USER_URL" : "@snowpack-public-user-url-fk5e"
+            "SNOWPACK_PUBLIC_DATABASE_URL" : "process.env.SNOWPACK_PUBLIC_DATABASE_URL",
+            "SNOWPACK_PUBLIC_VIDEO_URL" : "process.env.SNOWPACK_PUBLIC_VIDEO_URL",
+            "SNOWPACK_PUBLIC_USER_URL" : "process.env.SNOWPACK_PUBLIC_USER_URL"
         }
     }
 }
