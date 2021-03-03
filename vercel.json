@@ -22,11 +22,11 @@
             ]
         }
     ],
-    "build": {
+    
         "env": {
             "SNOWPACK_PUBLIC_DATABASE_URL" : "process.env.SNOWPACK_PUBLIC_DATABASE_URL",
             "SNOWPACK_PUBLIC_VIDEO_URL" : "process.env.SNOWPACK_PUBLIC_VIDEO_URL",
             "SNOWPACK_PUBLIC_USER_URL" : "process.env.SNOWPACK_PUBLIC_USER_URL"
         }
-    }
+    
 }
