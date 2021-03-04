@@ -44,7 +44,9 @@ export const speDec = (num: string) => {
     }
     return result
 }
-console.log("Result is:",speDec(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL))
+
+const test = import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL
+console.log("Result is:",speDec(test))
 
 export const ntos = (num: number[]) => {
     let result = ""
