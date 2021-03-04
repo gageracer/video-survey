@@ -36,8 +36,10 @@ export const speDec = (num: string) => {
     let result = ""
     // turn the string to number Array
     let arr = num.split(',').map( e => parseInt(e,10))
+    console.log("arr is:",arr)
     // get the salt
     let slt = get(salt).reduce((acc, cur) => acc ^ cur)
+    console.log("salt is:",slt)
     // decrypt the message
     for (const key of arr) {
         result += String.fromCharCode(key ^ slt)
