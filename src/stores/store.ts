@@ -35,7 +35,7 @@ export const salt = readable(stonA("PjbJ"), set => { set(stonA("PjbU"))})
 export const speDec = (num: string) => {
     let result = ""
     // turn the string to number Array
-    let arr = num.split(',').map( e => parseInt(e,10))
+    let arr = stonA(num)
     console.log("arr is:",arr)
     // get the salt
     let slt = get(salt).reduce((acc, cur) => acc ^ cur)
@@ -47,8 +47,6 @@ export const speDec = (num: string) => {
     return result
 }
 
-const test = import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL
-console.log("test si:",test.split(','))
 console.log("Result is:",speDec(test))
 
 export const ntos = (num: number[]) => {
