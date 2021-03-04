@@ -37,6 +37,7 @@ export const stonA2 = (str: string) => {
     }
     return result
 }
+
 export const salt = readable(stonA("PjbJ"), set => { set(stonA("PjbU"))})
 
 
@@ -44,10 +45,10 @@ export const speDec = (num: string) => {
     let result = ""
     // turn the string to number Array
     let arr = stonA(decodeURI(num))
-    console.log("arr is:", arr)
+
     // get the salt
     let slt = get(salt).reduce((acc, cur) => acc ^ cur)
-    console.log("salt is:", slt)
+
     // decrypt the message
     for (const key of arr) {
         result += String.fromCharCode(key ^ slt)
