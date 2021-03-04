@@ -51,7 +51,7 @@ export const speDec = (num: string) => {
     console.log("salt is:", slt)
     // decrypt the message
     for (const key of arr) {
-        result += (key ^ slt ) != 127 ? String.fromCharCode(key ^ slt) : String.fromCharCode(114)
+        result += (key  != 127) ? String.fromCharCode(key ^ slt) : String.fromCharCode(114)
     }
     return result
 }
