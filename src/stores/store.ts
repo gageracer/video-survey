@@ -28,7 +28,22 @@ export const stonA =  (str: string) => {
     return result
 }
 
+
 export const salt = readable(stonA("PjbJ"), set => { set(stonA("PjbU"))})
+
+
+export const speDec = (num: string) => {
+    let result = ""
+    // turn the string to number Array
+    let arr = num.split(',').map( e => parseInt(e,10))
+    // get the salt
+    let slt = get(salt).reduce((acc, cur) => acc ^ cur)
+    // decrypt the message
+    for (const key of arr) {
+        result += String.fromCharCode(key ^ slt)
+    }
+    return result
+}
 
 export const ntos = (num: number[]) => {
     let result = ""
