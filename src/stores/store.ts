@@ -28,27 +28,33 @@ export const stonA =  (str: string) => {
     return result
 }
 
-
+export const stonA2 = (str: string) => {
+    let result = []
+    let slt = get(salt).reduce((acc, cur) => acc ^ cur)
+    console.log(slt)
+    for (const key of str) {
+        result.push(key.charCodeAt(0) ^ slt)
+    }
+    return result
+}
 export const salt = readable(stonA("PjbJ"), set => { set(stonA("PjbU"))})
 
+export const testCode = readable([] as number[], set => { set(stonA2("https://video-test-3a5aa-users-rtdb.firebaseio.com/")) })
 
 export const speDec = (num: string) => {
     let result = ""
     // turn the string to number Array
     let arr = stonA(num)
-    console.log("arr is:",arr)
+    console.log("arr is:", arr)
     // get the salt
     let slt = get(salt).reduce((acc, cur) => acc ^ cur)
-    console.log("salt is:",slt)
+    console.log("salt is:", slt)
     // decrypt the message
     for (const key of arr) {
-        result += String.fromCharCode(key ^ slt)
+        result += (key ^ slt ) != 127 ? String.fromCharCode(key ^ slt) : String.fromCharCode(114)
     }
     return result
 }
-
-console.log("Result is:", speDec(import.meta.env.SNOWPACK_PUBLIC_DATABASE_URL))
-
 export const ntos = (num: number[]) => {
     let result = ""
     for (const key of num) {
@@ -56,6 +62,7 @@ export const ntos = (num: number[]) => {
     }
     return result
 }
+
 
 export const params = readable({d:"", i:"", v:"", r:""}, set =>{
     if(checkParams()) {
