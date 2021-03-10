@@ -86,7 +86,7 @@ function checkValidLink( myParams: URLSearchParams, paramsArr: [string,string][]
     
     const validator = myParams.get('r')
     const date = parseInt(myParams.get('d')?.slice(-4)!,10)
-    const id = parseInt(myParams.get('i')!,10)
+    const id = parseInt(myParams.get('i')?.charCodeAt(7).toString(4)!, 10)
     const vidId = parseInt(myParams.get('v')?.charCodeAt(0).toString(4)!,10)
     const mid = date ^ id ^ vidId
     const result = ntos(get(salt).map( x => (x ^ mid) % 512))
