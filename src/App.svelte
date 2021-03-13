@@ -1,7 +1,7 @@
 <script lang='typescript'>
 	import { onMount } from 'svelte';
 	import YouTube from 'svelte-youtube'
-	import { allData, params, isEmpty, speDec } from './stores/store'
+	import { allData, params, isEmpty, speDec, getIP } from './stores/store'
 	import { now,dated } from './stores/date'
 	import Admin from './components/Admin.svelte'
 
@@ -9,6 +9,7 @@
 	onMount(async () => {
 		operations = operations.length < 2 ?[{type: "Site Loaded", date: now(), videoTime: 0}] : [...operations,{type: "Site Loaded", date: now(), videoTime: 0}]
 		const interval2 = setInterval(() => onMountTime++, 1000);
+		$allData.ip = await getIP()
 		checkIdVid().then(res => {
 		loading = false
 			if(linkValid)sendFirstData()

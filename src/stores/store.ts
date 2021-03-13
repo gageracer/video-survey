@@ -2,13 +2,13 @@ import { writable,readable,get } from 'svelte/store'
 import { now } from './date'
 import  publicIp  from 'public-ip' 
 
-const getIP = async () =>{
+export const getIP = async () =>{
     return await publicIp.v4()
 }
 
 export const allData = writable({
     id: "",
-    ip: async() => await getIP(),
+    ip: "",
     partId: "",
     userAgent: navigator.userAgent,
     linkId: "",
