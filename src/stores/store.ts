@@ -1,8 +1,14 @@
 import { writable,readable,get } from 'svelte/store'
 import { now } from './date'
+import  publicIp  from 'public-ip' 
+
+const getIP = async () =>{
+    return await publicIp.v4()
+}
 
 export const allData = writable({
     id: "",
+    ip: getIP(),
     partId: "",
     userAgent: navigator.userAgent,
     linkId: "",
@@ -18,7 +24,6 @@ export const allData = writable({
         },
     ]
 })
-
 
 export const stonA =  (str: string) => {
     let result = []

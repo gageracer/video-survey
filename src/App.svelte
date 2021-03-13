@@ -26,7 +26,6 @@
 	// $: console.log("videoId:",videoId)
 	// TODO: Cookies Part 
 	
-
 	// System stuff
 	//const regex = /(?<=\?v=).{11}/
 	let videoUrl = `https://www.youtube.com/watch?v=${urlVid}`
@@ -61,6 +60,7 @@
 		$allData.partId = uId
 		if(firstsent && linkValid){
 			sendData()
+			console.log($allData.ip)
 		} 
 	}
 	// Check if the screen if visible or not
@@ -74,6 +74,7 @@
 		}
 	});
 
+
 	const checkIdVid = async() => {
 		let idData : {visited: number} 
 		let vidData : {visited: number} 
@@ -81,7 +82,7 @@
 		if(uId == "" || urlVid == "") return false
 		try{
 			// Checking if the userID is true
-			const resId= await fetch(`${speDec(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}/${vidDate}.json`)
+			const resId = await fetch(`${speDec(import.meta.env.SNOWPACK_PUBLIC_USER_URL)}userId/${uId}/${vidDate}.json`)
 			idData = await resId.json()
 			// Checking if the VideoID is true
 			const resVid = await fetch(`${speDec(import.meta.env.SNOWPACK_PUBLIC_VIDEO_URL)}videoLink/${vidDate}/${$params.v}.json`)
