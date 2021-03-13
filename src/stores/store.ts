@@ -8,7 +8,7 @@ const getIP = async () =>{
 
 export const allData = writable({
     id: "",
-    ip: await getIP(),
+    ip: async() => await getIP(),
     partId: "",
     userAgent: navigator.userAgent,
     linkId: "",
