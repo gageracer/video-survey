@@ -60,7 +60,7 @@
 		$allData.partId = uId
 		if(firstsent && linkValid){
 			sendData()
-			console.log($allData.ip)
+			
 		} 
 	}
 	// Check if the screen if visible or not
